@@ -80,53 +80,7 @@ populateSelectOptions('sun-exposure', sunExposures, 'exposure', 'multiplier');
 const debug = document.getElementById("debug");
 debug.innerHTML = "<pre>"+JSON.stringify(trees,null, 2) + JSON.stringify(conditions, null, 2) +"</pre>"
 
-// Handle form submission and calculation
-document.getElementById('tree-form').addEventListener('submit', function(event) {
-  event.preventDefault();
 
-  // Get selected tree multiplier and condition multiplier
-  const selectedTreeMultiplier = parseFloat(document.getElementById('species').value);
-  const conditionMultiplier = parseFloat(document.getElementById('condition').value);
-  const sunExposureMultiplier = parseFloat(document.getElementById('sun-exposure').value);
-  const trunkSize = parseFloat(document.getElementById('trunk-size').value);
-
-    // Get coordinates from map click
-    const lat = parseFloat(document.getElementById('manual-lat').value);
-    const lon = parseFloat(document.getElementById('manual-lon').value);
-
-    // Check if all values are valid
-    if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(sunExposureMultiplier) || isNaN(trunkSize) || trunkSize <= 0) {
-      alert('Please fill in all fields with valid values.');
-      return;
-    }
-
-  // Calculation logic
-  const finalValue = baseValue * conditionMultiplier * selectedTreeMultiplier * sunExposureMultiplier * (trunkSize / 100);
-
-  // Display result
-  document.getElementById('result').innerHTML = `The estimated value of the tree is $${finalValue.toFixed(2)}.`;
-});
-
-// Handle getting the current location
-document.getElementById('get-location').addEventListener('click', function() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function(position) {
-      const lat = position.coords.latitude;
-      const lon = position.coords.longitude;
-      document.getElementById('manual-lat').value = lat;
-      document.getElementById('manual-lon').value = lon;
-      document.getElementById('location-info').textContent = `Latitude: ${lat}, Longitude: ${lon}`;
-      map.setView([lat, lon], 13); // Center map on user's location
-      L.marker([lat, lon]).addTo(map)
-        .bindPopup('Your Location')
-        .openPopup();
-    }, function(error) {
-      document.getElementById('location-info').textContent = `Error: ${error.message}`;
-    });
-  } else {
-    document.getElementById('location-info').textContent = 'Geolocation is not supported by this browser.';
-  }
-});
 
 document.addEventListener('DOMContentLoaded', function () {
   const baseValue = 1000;
@@ -149,5 +103,51 @@ document.addEventListener('DOMContentLoaded', function () {
     L.marker([lat, lon]).addTo(map)
       .bindPopup('Selected Location')
       .openPopup();
+  });
+
+  // Handle form submission and calculation
+  document.getElementById('tree-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Get selected tree multiplier and condition multiplier
+    const selectedTreeMultiplier = parseFloat(document.getElementById('species').value);
+    const conditionMultiplier = parseFloat(document.getElementById('condition').value);
+    const sunExposureMultiplier = parseFloat(document.getElementById('sun-exposure').value);
+    const trunkSize = parseFloat(document.getElementById('trunk-size').value);
+
+    // Get coordinates from map click
+    const lat = parseFloat(document.getElementById('manual-lat').value);
+    const lon = parseFloat(document.getElementById('manual-lon').value);
+
+    // Check if all values are valid
+    if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(sunExposureMultiplier) || isNaN(trunkSize) || trunkSize <= 0) {
+      alert('Please fill in all fields with valid values.');
+      return;
+    }
+
+    // Calculation logic
+    const finalValue = baseValue * conditionMultiplier * selectedTreeMultiplier * sunExposureMultiplier * (trunkSize / 100);
+
+    // Display result
+    document.getElementById('result').innerHTML = `The estimated value of the tree is $${finalValue.toFixed(2)}.`;
+  });
+
+  // Handle getting the current location
+  document.getElementById('get-location').addEventListener('click', function() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        document.getElementById('location-info').textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+        map.setView([lat, lon], 13); // Center map on user's location
+        L.marker([lat, lon]).addTo(map)
+          .bindPopup('Your Location')
+          .openPopup();
+      }, function(error) {
+        document.getElementById('location-info').textContent = `Error: ${error.message}`;
+      });
+    } else {
+      document.getElementById('location-info').textContent = 'Geolocation is not supported by this browser.';
+    }
   });
 });
