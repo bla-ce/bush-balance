@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   </head>
   <body>
-    <div class="container">
+    <div class="container p-5">
       <form>
         <div class="mb-3">
           <label for="species" class="form-label">Tree Species <span style="color: red;">*</span></label>
@@ -41,6 +41,46 @@
         <div class="mb-3">
           <label for="trunk-size" class="form-label">Trunk Size (in cm) <span style="color: red;">*</span></label>
           <input type="number" id="trunk-size" class="form-control" placeholder="Enter trunk size" min="0" step="1" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="erosion-prevention" class="form-label">Erosion Prevention <span style="color: red;">*</span></label>
+          <select id="erosion-prevention" class="form-select" required>
+            <option value="" disabled selected>Select erosion prevention level</option>
+            <option value="low">Low</option>
+            <option value="moderate">Moderate</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="drainage" class="form-label">Drainage Factor <span style="color: red;">*</span></label>
+          <select id="drainage" class="form-select" required>
+            <option value="" disabled selected>Select drainage factor</option>
+            <option value="poor">Poor</option>
+            <option value="average">Average</option>
+            <option value="good">Good</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="carbon-sequestration" class="form-label">Carbon Sequestration <span style="color: red;">*</span></label>
+          <select id="carbon-sequestration" class="form-select" required>
+            <option value="" disabled selected>Select carbon sequestration level</option>
+            <option value="low">Low</option>
+            <option value="moderate">Moderate</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="nursery-service" class="form-label">Nursery Service <span style="color: red;">*</span></label>
+          <select id="nursery-service" class="form-select" required>
+            <option value="" disabled selected>Select nursery service level</option>
+            <option value="none">None</option>
+            <option value="moderate">Moderate</option>
+            <option value="high">High</option>
+          </select>
         </div>
 
         <div class="mb-3">
