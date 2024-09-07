@@ -70,6 +70,9 @@ const speciesOptions = trees.map(tree => ({
 populateSelectOptions('species', speciesOptions, 'species', 'multiplier');
 populateSelectOptions('condition', conditions, 'condition', 'multiplier');
 
+const debug = document.getElementById("debug");
+debug.innerHTML = "<pre>"+JSON.stringify(trees,null, 2) +"</pre>"
+
 // Handle form submission and calculation
 document.getElementById('tree-form').addEventListener('submit', function(event) {
   event.preventDefault();
