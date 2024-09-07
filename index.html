@@ -14,6 +14,12 @@
     <div class="container p-5">
       <form id="tree-form">
         <div class="mb-3">
+          <label class="form-label">Current Location</label>
+          <button type="button" class="btn btn-secondary" id="get-location">Get Location</button>
+          <p id="location-info">Location not fetched yet.</p>
+        </div>
+
+        <div class="mb-3">
           <label for="species" class="form-label">Tree Species <span style="color: red;">*</span></label>
           <select id="species" class="form-select" required></select>
         </div>

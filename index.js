@@ -103,3 +103,18 @@ document.getElementById('tree-form').addEventListener('submit', function(event) 
   document.getElementById('result').innerHTML = `The estimated value of the tree is $${finalValue.toFixed(2)}.`;
 });
 
+// Handle getting the current location
+document.getElementById('get-location').addEventListener('click', function() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
+      document.getElementById('location-info').textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+    }, function(error) {
+      document.getElementById('location-info').textContent = `Error: ${error.message}`;
+    });
+  } else {
+    document.getElementById('location-info').textContent = 'Geolocation is not supported by this browser.';
+  }
+});
+
