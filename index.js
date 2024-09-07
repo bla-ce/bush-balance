@@ -88,25 +88,56 @@ debug.innerHTML =
 document.addEventListener('DOMContentLoaded', function () {
   const baseValue = 1000;
 
-  // Initialize the map
-  const map = L.map('map').setView([-27.4698, 153.0251], 13); // Brisbane coordinates
+  // Declare map variable in the outer scope
+  let map;
 
-  // Add tile layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-  }).addTo(map);
+  // Initialize the map centered on Brisbane
+  function initializeMap() {
+    // Initialize the map
+    map = L.map('map').setView([-27.4698, 153.0251], 13); // Brisbane coordinates
 
-  // Handle map click event
-  map.on('click', function(e) {
-    const lat = e.latlng.lat;
-    const lon = e.latlng.lng;
-    document.getElementById('location-info').textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+    }).addTo(map);
 
-    // Add a marker at the clicked location
-    L.marker([lat, lon]).addTo(map)
-      .bindPopup('Selected Location')
-      .openPopup();
-  });
+    // Handle map click event
+    map.on('click', function(e) {
+      const lat = e.latlng.lat;
+      const lon = e.latlng.lng;
+      document.getElementById('location-info').textContent = `Latitude: ${lat}, Longitude: ${lon}`;
+
+      // Add a marker at the clicked location
+      L.marker([lat, lon]).addTo(map)
+        .bindPopup('Selected Location')
+        .openPopup();
+    });
+
+    addKoalaSightings();
+  }
+
+  function addKoalaSightings() {
+    fetch('koala.geojson')
+      .then(response => response.json())
+      .then(data => {
+        // Add each koala sighting to the map
+        data.features.forEach(feature => {
+          const lat = feature.geometry.coordinates[1];
+          const lon = feature.geometry.coordinates[0];
+          const koalaID = feature.properties.Koala_ID;
+          const observedDate = new Date(feature.properties.Observed_Date).toLocaleDateString();
+
+          L.marker([lat, lon]).addTo(map)
+            .bindPopup(`<b>Koala ID:</b> ${koalaID}<br><b>Observed Date:</b> ${observedDate}`)
+            .openPopup();
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching GeoJSON data:', error);
+      });
+  }
+
+  initializeMap();
 
   // Handle form submission and calculation
   document.getElementById('tree-form').addEventListener('submit', function(event) {
