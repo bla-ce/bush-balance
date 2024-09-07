@@ -30,6 +30,12 @@ const trees = [
   }
 ];
 
+const sunExposures = [
+  { exposure: 'Full Sun', multiplier: 1.2 },
+  { exposure: 'Partial Shade', multiplier: 1.0 },
+  { exposure: 'Full Shade', multiplier: 0.8 }
+];
+
 const conditions = [
   { condition: 'Excellent', multiplier: 1.5 },
   { condition: 'Good', multiplier: 1.3 },
@@ -69,6 +75,7 @@ const speciesOptions = trees.map(tree => ({
 // Populate species and conditions
 populateSelectOptions('species', speciesOptions, 'species', 'multiplier');
 populateSelectOptions('condition', conditions, 'condition', 'multiplier');
+populateSelectOptions('sun-exposure', sunExposures, 'exposure', 'multiplier');
 
 const debug = document.getElementById("debug");
 debug.innerHTML = "<pre>"+JSON.stringify(trees,null, 2) + JSON.stringify(conditions, null, 2) +"</pre>"
@@ -80,16 +87,17 @@ document.getElementById('tree-form').addEventListener('submit', function(event) 
   // Get selected tree multiplier and condition multiplier
   const selectedTreeMultiplier = parseFloat(document.getElementById('species').value);
   const conditionMultiplier = parseFloat(document.getElementById('condition').value);
+  const sunExposureMultiplier = parseFloat(document.getElementById('sun-exposure').value);
   const trunkSize = parseFloat(document.getElementById('trunk-size').value);
 
   // Check if all values are valid
-  if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(trunkSize) || trunkSize <= 0) {
+  if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(sunExposureMultiplier) || isNaN(trunkSize) || trunkSize <= 0) {
     alert('Please fill in all fields with valid values.');
     return;
   }
 
   // Calculation logic
-  const finalValue = baseValue * conditionMultiplier * selectedTreeMultiplier * (trunkSize / 100);
+  const finalValue = baseValue * conditionMultiplier * selectedTreeMultiplier * sunExposureMultiplier * (trunkSize / 100);
 
   // Display result
   document.getElementById('result').innerHTML = `The estimated value of the tree is $${finalValue.toFixed(2)}.`;
