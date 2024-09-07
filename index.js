@@ -85,92 +85,122 @@ debug.innerHTML =
     JSON.stringify(sunExposures, null, 2) +
   "</pre>"
 
+
 document.addEventListener('DOMContentLoaded', function () {
   const baseValue = 1000;
-
-  // Declare map variable in the outer scope
   let map;
+  let currentMarker = null; // Variable to keep track of the current marker
 
-  // Initialize the map centered on Brisbane
-  function initializeMap() {
-    // Initialize the map
+  async function initializeMap() {
     map = L.map('map').setView([-27.4698, 153.0251], 13); // Brisbane coordinates
 
-    // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
     }).addTo(map);
 
-    // Handle map click event
     map.on('click', function(e) {
       const lat = e.latlng.lat;
       const lon = e.latlng.lng;
+
+      document.getElementById('manual-lat').value = lat;
+      document.getElementById('manual-lon').value = lon;
+
       document.getElementById('location-info').textContent = `Latitude: ${lat}, Longitude: ${lon}`;
 
-      // Add a marker at the clicked location
-      L.marker([lat, lon]).addTo(map)
+      // Remove the previous marker if it exists
+      if (currentMarker) {
+        map.removeLayer(currentMarker);
+      }
+
+      // Add a new marker at the clicked location
+      currentMarker = L.marker([lat, lon]).addTo(map)
         .bindPopup('Selected Location')
         .openPopup();
     });
 
-    addKoalaSightings();
+    await fetchKoalaSightings();
   }
 
-  function addKoalaSightings() {
-    fetch('koala.geojson')
-      .then(response => response.json())
-      .then(data => {
-        // Add each koala sighting to the map
-        data.features.forEach(feature => {
-          const lat = feature.geometry.coordinates[1];
-          const lon = feature.geometry.coordinates[0];
-          const koalaID = feature.properties.Koala_ID;
-          const observedDate = new Date(feature.properties.Observed_Date).toLocaleDateString();
+  async function fetchKoalaSightings() {
+    try {
+      const response = await fetch('https://bla-ce.github.io/bush-balance/koala.geojson');
+      const data = await response.json();
 
-          L.marker([lat, lon]).addTo(map)
-            .bindPopup(`<b>Koala ID:</b> ${koalaID}<br><b>Observed Date:</b> ${observedDate}`)
-            .openPopup();
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching GeoJSON data:', error);
+      data.features.forEach(feature => {
+        const lat = feature.geometry.coordinates[1];
+        const lon = feature.geometry.coordinates[0];
+        const koalaID = feature.properties.Koala_ID;
+        const observedDate = new Date(feature.properties.Observed_Date).toLocaleDateString();
+
+        L.marker([lat, lon]).addTo(map)
+          .bindPopup(`<b>Koala ID:</b> ${koalaID}<br><b>Observed Date:</b> ${observedDate}`)
+          .openPopup();
       });
+    } catch (error) {
+      console.error('Error fetching GeoJSON data:', error);
+    }
   }
 
   initializeMap();
 
-  // Handle form submission and calculation
-  document.getElementById('tree-form').addEventListener('submit', function(event) {
+  document.getElementById('tree-form').addEventListener('submit', async function(event) {
     event.preventDefault();
 
-    // Get selected tree multiplier and condition multiplier
     const selectedTreeMultiplier = parseFloat(document.getElementById('species').value);
     const conditionMultiplier = parseFloat(document.getElementById('condition').value);
     const sunExposureMultiplier = parseFloat(document.getElementById('sun-exposure').value);
     const trunkSize = parseFloat(document.getElementById('trunk-size').value);
 
-    // Check if all values are valid
+    const lat = parseFloat(document.getElementById('manual-lat').value);
+    const lon = parseFloat(document.getElementById('manual-lon').value);
+
     if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(sunExposureMultiplier) || isNaN(trunkSize) || trunkSize <= 0) {
       alert('Please fill in all fields with valid values.');
       return;
     }
 
-    // Calculation logic
-    const finalValue = baseValue * conditionMultiplier * selectedTreeMultiplier * sunExposureMultiplier * (trunkSize / 100);
+    try {
+      const response = await fetch('https://bla-ce.github.io/bush-balance/koala.geojson');
+      const data = await response.json();
 
-    // Display result
-    document.getElementById('result').innerHTML = `The estimated value of the tree is $${finalValue.toFixed(2)}.`;
+      let withinRadius = false;
+      data.features.forEach(feature => {
+        const koalaLat = feature.geometry.coordinates[1];
+        const koalaLon = feature.geometry.coordinates[0];
+        const distance = calculateDistance(lat, lon, koalaLat, koalaLon);
+        if (distance <= 1) {
+          withinRadius = true;
+        }
+      });
+
+      let finalTreeMultiplier = selectedTreeMultiplier;
+      if (withinRadius) {
+        finalTreeMultiplier *= 1.1; 
+      }
+
+      const finalValue = baseValue * conditionMultiplier * finalTreeMultiplier * sunExposureMultiplier * (trunkSize / 100);
+
+      document.getElementById('result').innerHTML = `The estimated value of the tree is $${finalValue.toFixed(2)}.`;
+    } catch (error) {
+      console.error('Error fetching GeoJSON data:', error);
+    }
   });
 
-  // Handle getting the current location
   document.getElementById('get-location').addEventListener('click', function() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
         const lat = position.coords.latitude;
         const lon = position.coords.longitude;
+
+        document.getElementById('manual-lat').value = lat;
+        document.getElementById('manual-lon').value = lon;
+
         document.getElementById('location-info').textContent = `Latitude: ${lat}, Longitude: ${lon}`;
-        map.setView([lat, lon], 13); // Center map on user's location
-        L.marker([lat, lon]).addTo(map)
+        map.setView([lat, lon], 13); 
+        if (currentMarker) {
+          map.removeLayer(currentMarker);
+        }
+        currentMarker = L.marker([lat, lon]).addTo(map)
           .bindPopup('Your Location')
           .openPopup();
       }, function(error) {
@@ -181,3 +211,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371; 
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
