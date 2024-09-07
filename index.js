@@ -78,7 +78,12 @@ populateSelectOptions('condition', conditions, 'condition', 'multiplier');
 populateSelectOptions('sun-exposure', sunExposures, 'exposure', 'multiplier');
 
 const debug = document.getElementById("debug");
-debug.innerHTML = "<pre>"+JSON.stringify(trees,null, 2) + JSON.stringify(conditions, null, 2) +"</pre>"
+debug.innerHTML =
+  "<pre>" +
+    JSON.stringify(trees,null, 2) + 
+    JSON.stringify(conditions, null, 2) +
+    JSON.stringify(sunExposures, null, 2) +
+  "</pre>"
 
 document.addEventListener('DOMContentLoaded', function () {
   const baseValue = 1000;
