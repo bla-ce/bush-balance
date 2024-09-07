@@ -6,31 +6,27 @@ const trees = [
     drainageMultiplier: 1.0,
     carbonMultiplier: 1.05,
     nurseryMultiplier: 1.08,
-    carbonUptake: 0.5
   },
   {
     species: 'Tallow Wood',
     erosionMultiplier: 1.15,
     drainageMultiplier: 1.1,
     carbonMultiplier: 1.1,
-    nurseryMultiplier: 1.12,
-    carbonUptake: 1.3
+    nurseryMultiplier: 1.12
   },
   {
     species: 'Bunya Pine',
     erosionMultiplier: 1.2,
     drainageMultiplier: 1.2,
     carbonMultiplier: 1.2,
-    nurseryMultiplier: 1.15,
-    carbonUptake: 1
+    nurseryMultiplier: 1.15
   },
   {
     species: 'Blue Gum',
     erosionMultiplier: 1.05,
     drainageMultiplier: 1.05,
     carbonMultiplier: 1.0,
-    nurseryMultiplier: 1.1,
-    carbonUptake: 3.47
+    nurseryMultiplier: 1.1
   }
 ];
 
@@ -110,8 +106,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }).addTo(map);
 
     map.on('click', function(e) {
-      const lat = e.latlng.lat;
-      const lon = e.latlng.lng;
+      const lat = e.latlng.lat.toFixed(4);
+      const lon = e.latlng.lng.toFixed(4);
 
       document.getElementById('manual-lat').value = lat;
       document.getElementById('manual-lon').value = lon;
@@ -203,11 +199,12 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  document.getElementById('get-location').addEventListener('click', function() {
+  document.getElementById('get-location').addEventListener('click', function(e) {
+    e.preventDefault();
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function(position) {
-        const lat = position.coords.latitude;
-        const lon = position.coords.longitude;
+        const lat = position.coords.latitude.toFixed(4);
+        const lon = position.coords.longitude.toFixed(4);
 
         document.getElementById('manual-lat').value = lat;
         document.getElementById('manual-lon').value = lon;

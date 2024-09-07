@@ -15,14 +15,15 @@
     <div class="container p-5">
       <form id="tree-form">
         <div class="mb-3">
-          <label class="form-label">Current Location</label>
-          <button type="button" class="btn btn-secondary" id="get-location">Get Location</button>
-          <p id="location-info">Location not fetched yet.</p>
+          <label for="map" class="form-label">
+            Select Location on Map or <a href="" id="get-location">get current Location</a>
+          </label>
+          <div id="map" style="height: 400px;"></div>
         </div>
 
         <div class="mb-3">
-          <label for="map" class="form-label">Select Location on Map</label>
-          <div id="map" style="height: 400px;"></div>
+          <label class="form-label">Current Location</label>
+          <p id="location-info">Location not fetched yet.</p>
         </div>
 
         <input type="hidden" id="manual-lat" class="form-control">
