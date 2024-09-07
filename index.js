@@ -5,30 +5,41 @@ const trees = [
     erosionMultiplier: 1.1,
     drainageMultiplier: 1.0,
     carbonMultiplier: 1.05,
-    nurseryMultiplier: 1.08
+    nurseryMultiplier: 1.08,
+    carbonUptake: 0.5
   },
   {
     species: 'Tallow Wood',
     erosionMultiplier: 1.15,
     drainageMultiplier: 1.1,
     carbonMultiplier: 1.1,
-    nurseryMultiplier: 1.12
+    nurseryMultiplier: 1.12,
+    carbonUptake: 1.3
   },
   {
     species: 'Bunya Pine',
     erosionMultiplier: 1.2,
     drainageMultiplier: 1.2,
     carbonMultiplier: 1.2,
-    nurseryMultiplier: 1.15
+    nurseryMultiplier: 1.15,
+    carbonUptake: 1
   },
   {
     species: 'Blue Gum',
     erosionMultiplier: 1.05,
     drainageMultiplier: 1.05,
     carbonMultiplier: 1.0,
-    nurseryMultiplier: 1.1
+    nurseryMultiplier: 1.1,
+    carbonUptake: 3.47
   }
 ];
+
+const carbonUptake = {
+  'Narrow Leaf Ironbark': 0.5,
+  'Tallow Wood': 1.3,
+  'Bunya Pine': 1,
+  'Blue Gum': 3.47
+}
 
 const sunExposures = [
   { exposure: 'Full Sun', multiplier: 1.2 },
@@ -151,6 +162,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const sunExposureMultiplier = parseFloat(document.getElementById('sun-exposure').value);
     const trunkSize = parseFloat(document.getElementById('trunk-size').value);
 
+    const selectElement = document.getElementById('species');
+    const selectedOption = selectElement.options[selectElement.selectedIndex];
+    
+    const treeName = selectedOption.textContent;
+    const coUptake = carbonUptake[treeName] * trunkSize;
+
     const lat = parseFloat(document.getElementById('manual-lat').value);
     const lon = parseFloat(document.getElementById('manual-lon').value);
 
@@ -178,9 +195,9 @@ document.addEventListener('DOMContentLoaded', function () {
         finalTreeMultiplier *= 1.1; 
       }
 
-      const finalValue = baseValue * conditionMultiplier * finalTreeMultiplier * sunExposureMultiplier * (trunkSize / 100);
+      const finalValue = baseValue * conditionMultiplier * finalTreeMultiplier * sunExposureMultiplier * (trunkSize / 100) + coUptake;
 
-      document.getElementById('result').innerHTML = `The estimated value of the tree is $${finalValue.toFixed(2)}.`;
+      document.getElementById('result').innerHTML = `The estimated value of the tree over 20 years is $${finalValue.toFixed(2)}.`;
     } catch (error) {
       console.error('Error fetching GeoJSON data:', error);
     }
