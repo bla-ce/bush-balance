@@ -37,6 +37,25 @@ const carbonUptake = {
   'Blue Gum': 3.47
 }
 
+const regions = [
+  { name: 'Noosa', multiplier: 0.8 },
+  { name: 'Maroochydore', multiplier: 0.62 },
+  { name: 'Mooloolah', multiplier: 0.55 },
+  { name: 'Pumicestone', multiplier: 0.74 },
+  { name: 'Caboolture', multiplier: 0.61 },
+  { name: 'Stanley', multiplier: 0.63 },
+  { name: 'Upper Brisbane', multiplier: 0.37 },
+  { name: 'Pine', multiplier: 0.73 },
+  { name: 'Central', multiplier: 0.83 },
+  { name: 'Western', multiplier: 0.83 },
+  { name: 'Mid Brisbane', multiplier: 0.7 },
+  { name: 'Lower Brisbane', multiplier: 0.43 },
+  { name: 'Eastern', multiplier: 0.84 },
+  { name: 'Southern', multiplier: 0.7 },
+  { name: 'Lockyer', multiplier: 0.31 },
+  { name: 'Redland', multiplier: 0.55 }
+];
+
 const sunExposures = [
   { exposure: 'Full Sun', multiplier: 1.2 },
   { exposure: 'Partial Shade', multiplier: 1.0 },
@@ -83,14 +102,15 @@ const speciesOptions = trees.map(tree => ({
 populateSelectOptions('species', speciesOptions, 'species', 'multiplier');
 populateSelectOptions('condition', conditions, 'condition', 'multiplier');
 populateSelectOptions('sun-exposure', sunExposures, 'exposure', 'multiplier');
+populateSelectOptions('regions', regions, 'name', 'multiplier');
 
-const debug = document.getElementById("debug");
-debug.innerHTML =
-  "<pre>" +
-    JSON.stringify(trees,null, 2) + 
-    JSON.stringify(conditions, null, 2) +
-    JSON.stringify(sunExposures, null, 2) +
-  "</pre>"
+// const debug = document.getElementById("debug");
+// debug.innerHTML =
+//   "<pre>" +
+//     JSON.stringify(trees,null, 2) + 
+//     JSON.stringify(conditions, null, 2) +
+//     JSON.stringify(sunExposures, null, 2) +
+//   "</pre>"
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -157,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const conditionMultiplier = parseFloat(document.getElementById('condition').value);
     const sunExposureMultiplier = parseFloat(document.getElementById('sun-exposure').value);
     const trunkSize = parseFloat(document.getElementById('trunk-size').value);
+    const regionMultiplier = parseFloat(document.getElementById('regions').value);
 
     const selectElement = document.getElementById('species');
     const selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -167,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const lat = parseFloat(document.getElementById('manual-lat').value);
     const lon = parseFloat(document.getElementById('manual-lon').value);
 
-    if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(sunExposureMultiplier) || isNaN(trunkSize) || trunkSize <= 0) {
+    if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(sunExposureMultiplier) || isNaN(trunkSize) || trunkSize <= 0 || isNaN(regionMultiplier)) {
       alert('Please fill in all fields with valid values.');
       return;
     }
@@ -186,14 +207,19 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       });
 
-      let finalTreeMultiplier = selectedTreeMultiplier;
+      let finalTreeMultiplier = selectedTreeMultiplier * regionMultiplier;
       if (withinRadius) {
         finalTreeMultiplier *= 1.1; 
       }
 
       const finalValue = baseValue * conditionMultiplier * finalTreeMultiplier * sunExposureMultiplier * (trunkSize / 100) + coUptake;
 
-      document.getElementById('result').innerHTML = `The estimated value of the tree over 20 years is $${finalValue.toFixed(2)}.`;
+      const resultModalBody = document.getElementById('resultModalBody');
+      resultModalBody.textContent = `The estimated value of the tree over 20 years is $${finalValue.toFixed(2)}.`;
+
+      // Trigger the modal
+      const resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+      resultModal.show();
     } catch (error) {
       console.error('Error fetching GeoJSON data:', error);
     }

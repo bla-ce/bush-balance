@@ -1,0 +1,16 @@
+Noosa 0.8
+Maroochydore 0.62
+Mooloolah 0.55
+Pumicestone 0.74
+Caboolture 0.61
+Stanley 0.63
+Upper Brisbane 0.37
+Pine  0.73
+Central 0.83
+Western 0.83
+Mid Brisbane 0.7
+Lower Brisbane 0.43
+Eastern 0.84
+Southern 0.7
+Lockyer 0.31
+Redland 0.55
