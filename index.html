@@ -12,84 +12,33 @@
   </head>
   <body>
     <div class="container p-5">
-      <form>
+      <form id="tree-form">
         <div class="mb-3">
           <label for="species" class="form-label">Tree Species <span style="color: red;">*</span></label>
-          <select id="species" class="form-select" aria-label="Default select example" required>
-            <option value="" disabled selected>Select tree species</option>
-            <option value="narrow-leaf">Narrow Leaf Ironbark</option>
-            <option value="tallow-wood">Tallow Wood</option>
-            <option value="bunya-pine">Bunya Pine</option>
-            <option value="blue-gum">Blue Gum</option>
-          </select>
+          <select id="species" class="form-select" required></select>
         </div>
 
         <div class="mb-3">
           <label for="condition" class="form-label">Tree Condition <span style="color: red;">*</span></label>
-          <select id="condition" class="form-select" aria-label="Default select example" required>
-            <option value="" disabled selected>Select tree condition</option>
-            <option value="excellent">Excellent</option>
-            <option value="good">Good</option>
-            <option value="fair">Fair</option>
-            <option value="poor">Poor</option>
-            <option value="critical">Critical</option>
-            <option value="dying">Dying</option>
-            <option value="dead">Dead</option>
-          </select>
+          <select id="condition" class="form-select" required></select>
         </div>
 
         <div class="mb-3">
           <label for="trunk-size" class="form-label">Trunk Size (in cm) <span style="color: red;">*</span></label>
           <input type="number" id="trunk-size" class="form-control" placeholder="Enter trunk size" min="0" step="1" required>
         </div>
-
-        <div class="mb-3">
-          <label for="erosion-prevention" class="form-label">Erosion Prevention <span style="color: red;">*</span></label>
-          <select id="erosion-prevention" class="form-select" required>
-            <option value="" disabled selected>Select erosion prevention level</option>
-            <option value="low">Low</option>
-            <option value="moderate">Moderate</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label for="drainage" class="form-label">Drainage Factor <span style="color: red;">*</span></label>
-          <select id="drainage" class="form-select" required>
-            <option value="" disabled selected>Select drainage factor</option>
-            <option value="poor">Poor</option>
-            <option value="average">Average</option>
-            <option value="good">Good</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label for="carbon-sequestration" class="form-label">Carbon Sequestration <span style="color: red;">*</span></label>
-          <select id="carbon-sequestration" class="form-select" required>
-            <option value="" disabled selected>Select carbon sequestration level</option>
-            <option value="low">Low</option>
-            <option value="moderate">Moderate</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-
-        <div class="mb-3">
-          <label for="nursery-service" class="form-label">Nursery Service <span style="color: red;">*</span></label>
-          <select id="nursery-service" class="form-select" required>
-            <option value="" disabled selected>Select nursery service level</option>
-            <option value="none">None</option>
-            <option value="moderate">Moderate</option>
-            <option value="high">High</option>
-          </select>
-        </div>
-
         <div class="mb-3">
           <span style="color: red;">*</span> These fields are required.
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+
+      <div id="result"></div>
+
     </div>
+
+    <div id="result"></div>
     <script src="index.js"></script>
   </body>
 </html>
