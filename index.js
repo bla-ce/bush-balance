@@ -55,7 +55,7 @@ function calculateSpeciesMultiplier(tree) {
   return erosionMultiplier * drainageMultiplier * carbonMultiplier * nurseryMultiplier;
 }
 
-// Populate select options dynamically
+// Populate select options 
 function populateSelectOptions(id, options, labelKey, valueKey) {
   const select = document.getElementById(id);
   options.forEach(option => {
@@ -79,8 +79,6 @@ populateSelectOptions('sun-exposure', sunExposures, 'exposure', 'multiplier');
 
 const debug = document.getElementById("debug");
 debug.innerHTML = "<pre>"+JSON.stringify(trees,null, 2) + JSON.stringify(conditions, null, 2) +"</pre>"
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
   const baseValue = 1000;
@@ -114,10 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const conditionMultiplier = parseFloat(document.getElementById('condition').value);
     const sunExposureMultiplier = parseFloat(document.getElementById('sun-exposure').value);
     const trunkSize = parseFloat(document.getElementById('trunk-size').value);
-
-    // Get coordinates from map click
-    const lat = parseFloat(document.getElementById('manual-lat').value);
-    const lon = parseFloat(document.getElementById('manual-lon').value);
 
     // Check if all values are valid
     if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(sunExposureMultiplier) || isNaN(trunkSize) || trunkSize <= 0) {
