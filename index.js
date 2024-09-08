@@ -125,12 +125,6 @@ document.addEventListener('DOMContentLoaded', function () {
       maxZoom: 19,
     }).addTo(map);
 
-    map.on('load', async function() {
-      await fetchKoalaSightings();
-      await fetchMangroveData();
-
-    });
-
     map.on('click', function(e) {
       const lat = e.latlng.lat.toFixed(4);
       const lon = e.latlng.lng.toFixed(4);
