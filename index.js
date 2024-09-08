@@ -300,7 +300,8 @@ document.addEventListener('DOMContentLoaded', function () {
       div.classList.add('legend');
       div.innerHTML = `
       <i style="background: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png'); background-size: 25px 41px; width: 25px; height: 41px; display: inline-block;"></i> Koala Sighted<br>
-      <i style="background: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'); background-size: 25px 41px; width: 25px; height: 41px; display: inline-block;"></i> Your Location
+      <i style="background: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'); background-size: 25px 41px; width: 25px; height: 41px; display: inline-block;"></i> Your Location<br>
+      <i style="background: blue; width: 20px; height: 20px; display: inline-block;"></i> Coastal Hazard Erosion
     `;
       return div;
     };
