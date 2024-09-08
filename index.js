@@ -140,12 +140,14 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       // Add a new marker at the clicked location
-      currentMarker = L.marker([lat, lon]).addTo(map)
+      currentMarker = L.marker([lat, lon], { icon: redIcon }).addTo(map)
         .bindPopup('Selected Location')
         .openPopup();
     });
 
     await fetchKoalaSightings();
+    await fetchGeoJSONData();
+    addLegend();
   }
 
   async function fetchKoalaSightings() {
@@ -159,10 +161,28 @@ document.addEventListener('DOMContentLoaded', function () {
         const koalaID = feature.properties.Koala_ID;
         const observedDate = new Date(feature.properties.Observed_Date).toLocaleDateString();
 
-        L.marker([lat, lon]).addTo(map)
+        L.marker([lat, lon], { icon: greyIcon }).addTo(map)
           .bindPopup(`<b>Koala ID:</b> ${koalaID}<br><b>Observed Date:</b> ${observedDate}`)
           .openPopup();
       });
+    } catch (error) {
+      console.error('Error fetching GeoJSON data:', error);
+    }
+  }
+
+  async function fetchGeoJSONData() {
+    try {
+      const response = await fetch('https://bla-ce.github.io/bush-balance/erosion.geojson');
+      const data = await response.json();
+
+      L.geoJSON(data, {
+        style: function (feature) {
+          return {color: 'blue', weight: 2};
+        },
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(`<b>Description:</b> ${feature.properties.OVL2_DESC}`);
+        }
+      }).addTo(map);
     } catch (error) {
       console.error('Error fetching GeoJSON data:', error);
     }
@@ -225,6 +245,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
+  // Define the red marker icon
+  const redIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41], // size of the icon
+    iconAnchor: [12, 41], // point of the icon which will correspond to marker's location
+    popupAnchor: [1, -34], // point from which the popup should open relative to the iconAnchor
+    shadowSize: [41, 41], // size of the shadow
+  });
+
+  // Define the grey icon for koalas
+  const greyIcon = L.icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
+    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+    iconSize: [25, 41], // size of the icon
+    iconAnchor: [12, 41], // point of the icon which will correspond to marker's location
+    popupAnchor: [1, -34], // point from which the popup should open relative to the iconAnchor
+    shadowSize: [41, 41], // size of the shadow
+  });
+
   document.getElementById('get-location').addEventListener('click', function(e) {
     e.preventDefault();
     if (navigator.geolocation) {
@@ -240,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (currentMarker) {
           map.removeLayer(currentMarker);
         }
-        currentMarker = L.marker([lat, lon]).addTo(map)
+        currentMarker = L.marker([lat, lon], { icon: redIcon }).addTo(map)
           .bindPopup('Your Location')
           .openPopup();
       }, function(error) {
@@ -250,6 +290,23 @@ document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('location-info').textContent = 'Geolocation is not supported by this browser.';
     }
   });
+
+  // Add a legend to the map
+  function addLegend() {
+    const legend = L.control({ position: 'bottomright' });
+
+    legend.onAdd = function(map) {
+      const div = L.DomUtil.create('div', 'info legend');
+      div.classList.add('legend');
+      div.innerHTML = `
+      <i style="background: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png'); background-size: 25px 41px; width: 25px; height: 41px; display: inline-block;"></i> Koala Sighted<br>
+      <i style="background: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'); background-size: 25px 41px; width: 25px; height: 41px; display: inline-block;"></i> Your Location
+    `;
+      return div;
+    };
+
+    legend.addTo(map);
+  }
 });
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
