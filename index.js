@@ -125,6 +125,12 @@ document.addEventListener('DOMContentLoaded', function () {
       maxZoom: 19,
     }).addTo(map);
 
+    map.on('load', async function() {
+      await fetchKoalaSightings();
+      await fetchMangroveData();
+
+    });
+
     map.on('click', function(e) {
       const lat = e.latlng.lat.toFixed(4);
       const lon = e.latlng.lng.toFixed(4);
@@ -210,10 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
       L.geoJSON(data, {
         style: function(feature) {
           return { color: 'green', weight: 2, opacity: 0.7 };
-        },
-        onEachFeature: function(feature, layer) {
-          // Optional: Bind popups or other interactivity
-          layer.bindPopup(`<b>${feature.properties.primsed_name}</b><br>Total Mangrove Area: ${feature.properties.mc2016_2021add_totalmangrove}`);
         }
       }).addTo(map);
     } catch (error) {
