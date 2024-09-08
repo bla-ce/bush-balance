@@ -274,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
         finalTreeMultiplier *= 1.05;
       }
 
-      const finalValue = baseValue * conditionMultiplier * finalTreeMultiplier * sunExposureMultiplier * (trunkSize / 100) + coUptake;
+      const finalValue = baseValue * conditionMultiplier * finalTreeMultiplier * sunExposureMultiplier * (trunkSize / 20) + coUptake;
 
       const resultModalBody = document.getElementById('resultModalBody');
       resultModalBody.textContent = `The estimated value of the tree over 20 years is $${finalValue.toFixed(2)}.`;
