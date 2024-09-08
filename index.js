@@ -171,11 +171,24 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   let erosionLayer;
+  let erosionLayerData = [];
+
+  // Function to check if point is in any erosion zone
+  function isPointInErosionZone(lat, lon) {
+    const point = turf.point([lon, lat]);
+
+    return erosionLayerData.some(zone => {
+      const polygon = turf.polygon(zone.geometry.coordinates);
+      return turf.booleanPointInPolygon(point, polygon);
+    });
+  }
 
   async function fetchGeoJSONData() {
     try {
       const response = await fetch('https://bla-ce.github.io/bush-balance/erosion.geojson');
       const data = await response.json();
+
+      erosionLayerData = data.features;
 
       erosionLayer = L.geoJSON(data, {
         style: function(feature) {
@@ -237,6 +250,11 @@ document.addEventListener('DOMContentLoaded', function () {
       let finalTreeMultiplier = selectedTreeMultiplier * regionMultiplier;
       if (withinRadius) {
         finalTreeMultiplier *= 1.1; 
+      }
+
+      // Check if the point is within the erosion zones
+      if (isPointInErosionZone(lat, lon)) {
+        finalTreeMultiplier *= 1.05;
       }
 
       const finalValue = baseValue * conditionMultiplier * finalTreeMultiplier * sunExposureMultiplier * (trunkSize / 100) + coUptake;
