@@ -18,8 +18,21 @@
   <body>
     <div class="container p-5">
       <form class="row" id="tree-form">
-        <div class="col-4">
           <div class="mb-3">
+            <div class="mb-3">
+              <label for="map" class="form-label">
+                Select Location on Map or <a href="" id="get-location">get current Location</a>
+              </label>
+              <div class="rounded" id="map" style="height: 400px;"></div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Current Location <span style="color: red;">*</span></label>
+              <p id="location-info">Location not fetched yet.</p>
+            </div>
+
+            <input type="hidden" id="manual-lat" class="form-control">
+            <input type="hidden" id="manual-lon" class="form-control">
             <label for="regions" class="form-label">Region <span style="color: red;">*</span></label>
             <select id="regions" class="form-select" required>
               <option value="" disabled selected>Select region</option>
@@ -57,23 +70,6 @@
           <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary">Submit</button>
           </div>
-        </div>
-        <div class="col-8">
-          <div class="mb-3">
-            <label for="map" class="form-label">
-              Select Location on Map or <a href="" id="get-location">get current Location</a>
-            </label>
-            <div class="rounded" id="map" style="height: 400px;"></div>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label">Current Location <span style="color: red;">*</span></label>
-            <p id="location-info">Location not fetched yet.</p>
-          </div>
-
-          <input type="hidden" id="manual-lat" class="form-control">
-          <input type="hidden" id="manual-lon" class="form-control">
-        </div>
       </form>
     </div>
 
