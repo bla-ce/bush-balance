@@ -170,17 +170,16 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
+  let erosionLayer;
+
   async function fetchGeoJSONData() {
     try {
       const response = await fetch('https://bla-ce.github.io/bush-balance/erosion.geojson');
       const data = await response.json();
 
-      L.geoJSON(data, {
-        style: function (feature) {
-          return {color: 'blue', weight: 2};
-        },
-        onEachFeature: function (feature, layer) {
-          layer.bindPopup(`<b>Description:</b> ${feature.properties.OVL2_DESC}`);
+      erosionLayer = L.geoJSON(data, {
+        style: function(feature) {
+          return { color: 'blue', weight: 2, opacity: 0.5 };
         }
       }).addTo(map);
     } catch (error) {
@@ -207,6 +206,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const lat = parseFloat(document.getElementById('manual-lat').value);
     const lon = parseFloat(document.getElementById('manual-lon').value);
+
+    const isLatValid = !isNaN(lat) && lat >= -90 && lat <= 90;
+    const isLonValid = !isNaN(lon) && lon >= -180 && lon <= 180;
+
+    if (!isLatValid || !isLonValid) {
+      alert('Please provide valid latitude and longitude values.');
+      return;
+    }
 
     if (isNaN(selectedTreeMultiplier) || isNaN(conditionMultiplier) || isNaN(sunExposureMultiplier) || isNaN(trunkSize) || trunkSize <= 0 || isNaN(regionMultiplier)) {
       alert('Please fill in all fields with valid values.');
@@ -249,20 +256,20 @@ document.addEventListener('DOMContentLoaded', function () {
   const redIcon = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41], // size of the icon
-    iconAnchor: [12, 41], // point of the icon which will correspond to marker's location
-    popupAnchor: [1, -34], // point from which the popup should open relative to the iconAnchor
-    shadowSize: [41, 41], // size of the shadow
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
   });
 
   // Define the grey icon for koalas
   const greyIcon = L.icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-    iconSize: [25, 41], // size of the icon
-    iconAnchor: [12, 41], // point of the icon which will correspond to marker's location
-    popupAnchor: [1, -34], // point from which the popup should open relative to the iconAnchor
-    shadowSize: [41, 41], // size of the shadow
+    iconSize: [25, 41],
+    iconAnchor: [12, 41], 
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
   });
 
   document.getElementById('get-location').addEventListener('click', function(e) {

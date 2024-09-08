@@ -20,32 +20,42 @@
         <div class="col-4">
           <div class="mb-3">
             <label for="regions" class="form-label">Region <span style="color: red;">*</span></label>
-            <select id="regions" class="form-select" required></select>
+            <select id="regions" class="form-select" required>
+              <option value="" disabled selected>Select region</option>
+            </select>
           </div>
 
           <div class="mb-3">
             <label for="species" class="form-label">Tree Species <span style="color: red;">*</span></label>
-            <select id="species" class="form-select" required></select>
+            <select id="species" class="form-select" required>
+              <option value="" disabled selected>Select tree species</option>
+            </select>
           </div>
 
           <div class="mb-3">
             <label for="condition" class="form-label">Tree Condition <span style="color: red;">*</span></label>
-            <select id="condition" class="form-select" required></select>
+            <select id="condition" class="form-select" required>
+              <option value="" disabled selected>Select tree condition</option>
+            </select>
           </div>
 
           <div class="mb-3">
             <label for="trunk-size" class="form-label">Trunk Diameter (in cm) <span style="color: red;">*</span></label>
             <input type="number" id="trunk-size" class="form-control" placeholder="Enter trunk diameter" min="0" step="1" required>
           </div>
+
           <div class="mb-3">
             <label for="sun-exposure" class="form-label">Sun Exposure <span style="color: red;">*</span></label>
-            <select id="sun-exposure" class="form-select" required></select>
+            <select id="sun-exposure" class="form-select" required>
+              <option value="" disabled selected>Select tree sun exposure</option>
+            </select>
           </div>
           <div class="mb-3">
             <span style="color: red;">*</span> These fields are required.
           </div>
-
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
         </div>
         <div class="col-8">
           <div class="mb-3">
@@ -56,7 +66,7 @@
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Current Location</label>
+            <label class="form-label">Current Location <span style="color: red;">*</span></label>
             <p id="location-info">Location not fetched yet.</p>
           </div>
 
