@@ -147,6 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     await fetchKoalaSightings();
     await fetchGeoJSONData();
+    await fetchMangroveData();
     addLegend();
   }
 
@@ -193,6 +194,26 @@ document.addEventListener('DOMContentLoaded', function () {
       erosionLayer = L.geoJSON(data, {
         style: function(feature) {
           return { color: 'blue', weight: 2, opacity: 0.5 };
+        }
+      }).addTo(map);
+    } catch (error) {
+      console.error('Error fetching GeoJSON data:', error);
+    }
+  }
+
+  async function fetchMangroveData() {
+    try {
+      const response = await fetch('https://services-ap1.arcgis.com/ypkPEy1AmwPKGNNv/arcgis/rest/services/ABS_Oceans22_MangroveCensus_16_21_PrimSed/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson');
+      const data = await response.json();
+
+      // Add the GeoJSON data to the map
+      L.geoJSON(data, {
+        style: function(feature) {
+          return { color: 'green', weight: 2, opacity: 0.7 };
+        },
+        onEachFeature: function(feature, layer) {
+          // Optional: Bind popups or other interactivity
+          layer.bindPopup(`<b>${feature.properties.primsed_name}</b><br>Total Mangrove Area: ${feature.properties.mc2016_2021add_totalmangrove}`);
         }
       }).addTo(map);
     } catch (error) {
@@ -326,7 +347,8 @@ document.addEventListener('DOMContentLoaded', function () {
       div.innerHTML = `
       <i style="background: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png'); background-size: 25px 41px; width: 25px; height: 41px; display: inline-block;"></i> Koala Sighted<br>
       <i style="background: url('https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'); background-size: 25px 41px; width: 25px; height: 41px; display: inline-block;"></i> Your Location<br>
-      <i style="background: blue; width: 20px; height: 20px; display: inline-block;"></i> Coastal Hazard Erosion
+      <i style="background: blue; width: 20px; height: 20px; display: inline-block;"></i> Coastal Hazard Erosion <br>
+      <i style="background: green; width: 20px; height: 20px; display: inline-block;"></i> Mangrove Extent 
     `;
       return div;
     };
